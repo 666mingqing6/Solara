@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solara</title>
+    <title>Solara · 星籁</title>
     <meta name="apple-mobile-web-app-title" content="Solara">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
@@ -15,295 +15,800 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script>
-        (function () {
-            const ua = navigator.userAgent || "";
-            const isMobileUA = /android|iphone|ipad|ipod|mobile|blackberry|phone|opera mini|windows phone/i.test(ua);
-            const isSmallScreen = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 820px)").matches;
-            const isMobile = isMobileUA || isSmallScreen;
-            window.__SOLARA_IS_MOBILE = isMobile;
-            if (!isMobile) {
-                document.documentElement.classList.add("desktop-view");
-                const desktopLink = document.createElement("link");
-                desktopLink.rel = "stylesheet";
-                desktopLink.href = "css/desktop.css";
-                desktopLink.id = "desktopStylesheet";
-                document.head.appendChild(desktopLink);
-                return;
-            }
-            document.documentElement.classList.add("mobile-view");
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "css/mobile.css";
-            link.id = "mobileStylesheet";
-            document.head.appendChild(link);
-            const setViewportUnit = () => {
-                const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-                document.documentElement.style.setProperty("--mobile-vh", `${viewportHeight}px`);
-            };
+    <style>
+        /* 基础样式 */
+        :root {
+            --primary: #8A2BE2;
+            --primary-light: #9B4BFF;
+            --primary-dark: #6A1B9A;
+            --accent: #FF4081;
+            --text: #333333;
+            --text-light: #666666;
+            --text-lighter: #999999;
+            --bg: #FFFFFF;
+            --bg-secondary: #F8F9FA;
+            --bg-card: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
 
-            const applyBodyClass = () => {
-                if (document.body) {
-                    document.body.classList.add("mobile-view");
-                    setViewportUnit();
-                }
-            };
-            if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", applyBodyClass, { once: true });
-            } else {
-                applyBodyClass();
-            }
+        [data-theme="dark"] {
+            --primary: #9B4BFF;
+            --primary-light: #B388FF;
+            --primary-dark: #7B1FA2;
+            --accent: #FF4081;
+            --text: #E0E0E0;
+            --text-light: #B0B0B0;
+            --text-lighter: #888888;
+            --bg: #121212;
+            --bg-secondary: #1E1E1E;
+            --bg-card: #252525;
+            --border: #333333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
 
-            window.addEventListener("resize", setViewportUnit);
-            window.addEventListener("orientationchange", setViewportUnit);
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener("resize", setViewportUnit);
-                window.visualViewport.addEventListener("scroll", setViewportUnit);
-            }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            setViewportUnit();
-        })();
-    </script>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 24px;
+            min-height: 100vh;
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 24px 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .brand-tagline {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .credit {
+            font-size: 0.75rem;
+            color: var(--text-lighter);
+            line-height: 1.4;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            margin-top: 12px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(15deg);
+        }
+
+        /* 搜索区域 */
+        .search-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .search-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2);
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 12px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .source-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .source-option {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .source-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .source-option:hover:not(.active) {
+            border-color: var(--primary);
+        }
+
+        /* 中央内容区 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .player-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .album-art {
+            width: 240px;
+            height: 240px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .album-art::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1));
+        }
+
+        .album-art i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .song-info {
+            margin-bottom: 24px;
+            width: 100%;
+        }
+
+        .song-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .song-artist {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .progress-container {
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+        }
+
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .play-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .quality-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quality-option {
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quality-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 右侧边栏 */
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .playlist-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: var(--bg-secondary);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .playlist-items {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .playlist-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .playlist-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .playlist-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .item-artist {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .playlist-item.active .item-artist {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .item-duration {
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+        }
+
+        .playlist-item.active .item-duration {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .lyrics-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lyrics-content {
+            flex: 1;
+            overflow-y: auto;
+            text-align: center;
+            padding: 16px;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .lyrics-line {
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .lyrics-line.active {
+            color: var(--primary);
+            font-weight: 500;
+            transform: scale(1.05);
+        }
+
+        /* 探索雷达按钮 */
+        .explore-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(138, 43, 226, 0.4);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr 1.5fr;
+            }
+            
+            .right-sidebar {
+                grid-column: 1 / -1;
+                flex-direction: row;
+            }
+            
+            .playlist-section, .lyrics-section {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+            
+            .right-sidebar {
+                flex-direction: column;
+            }
+            
+            .album-art {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
 </head>
 <body>
-    <div class="background-stage" id="backgroundStage" aria-hidden="true">
-        <div class="background-stage__layer background-stage__layer--base" id="backgroundBaseLayer"></div>
-        <div class="background-stage__layer background-stage__layer--transition" id="backgroundTransitionLayer"></div>
-    </div>
-    <div class="container" id="mainContainer">
-        <div class="mobile-toolbar" id="mobileToolbar" role="toolbar">
-            <button class="mobile-toolbar__button" id="mobileExploreButton" type="button" aria-label="探索雷达">
-                <i class="fas fa-satellite-dish" aria-hidden="true"></i>
-            </button>
-            <div class="mobile-toolbar__title" id="mobileToolbarTitle">Solara</div>
-            <div class="mobile-toolbar__actions">
-                <button class="mobile-toolbar__button" id="mobileSearchToggle" type="button" aria-label="打开搜索">
-                    <i class="fas fa-search" aria-hidden="true"></i>
+    <div class="app-container">
+        <!-- 左侧边栏 -->
+        <div class="sidebar">
+            <div class="brand-section">
+                <div class="brand-logo">Solara</div>
+                <div class="brand-tagline">星籁之声 · 心灵之旅</div>
+                <div class="credit">
+                    由 MingQing & Re.Lumoes 倾心呈现<br>
+                    音乐源：GD音乐台 (music.gdstudio.xyz)<br>
+                    无人扶我青云志，我自踏雪至山巅
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
                 </button>
             </div>
-        </div>
-        <div class="header">
-            <h1>Solara</h1>
-            <div class="warning">Made by Wet Dream Boy，免费API来自GD音乐台(music.gdstudio.xyz)，仅供学习交流使用，请支持正版音乐奥！</div>
-            <div class="theme-switch-wrapper">
-                <button id="themeToggleButton" class="theme-toggle-button" type="button" aria-label="切换深浅色模式">
-                    <i class="fas fa-sun theme-icon theme-icon--sun" aria-hidden="true"></i>
-                    <i class="fas fa-moon theme-icon theme-icon--moon" aria-hidden="true"></i>
-                </button>
+
+            <div class="search-section">
+                <div class="search-title">探索音乐世界</div>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索歌曲、歌手或专辑...">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        <span>搜索</span>
+                    </button>
+                </div>
+                <div class="source-selector">
+                    <div class="source-option active">网易云音乐</div>
+                    <div class="source-option">QQ音乐</div>
+                    <div class="source-option">酷狗音乐</div>
+                    <div class="source-option">咪咕音乐</div>
+                </div>
             </div>
         </div>
 
-        <div class="search-area" id="searchArea">
-            <button type="button" class="mobile-close-btn" id="mobileSearchClose" aria-label="关闭搜索">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-            <div class="search-container">
-                <input type="text" id="searchInput" class="search-input" placeholder="搜索歌曲、歌手或专辑...">
-                <div class="source-select-wrapper" id="sourceSelectWrapper">
-                    <button id="sourceSelectButton" class="source-select-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
-                        <span id="sourceSelectLabel">网易云音乐</span>
-                        <i class="fas fa-chevron-down caret-icon" aria-hidden="true"></i>
-                    </button>
-                    <div id="sourceMenu" class="source-menu" role="listbox" aria-labelledby="sourceSelectButton"></div>
-                </div>
-                <button id="searchBtn" class="search-btn">
-                    <i class="fas fa-search"></i>
-                    <span>搜索</span>
-                </button>
-            </div>
-            <div id="searchResults" class="search-results">
-                <div class="search-results-toolbar">
-                    <button id="importSelectedBtn" class="import-selected-btn" type="button" disabled>
-                        <i class="fas fa-file-import" aria-hidden="true"></i>
-                        <span class="import-selected-label">导入已选</span>
-                        <span id="importSelectedCount" class="import-selected-count" aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div id="searchResultsList" class="search-results-list"></div>
-            </div>
-        </div>
-
+        <!-- 中央内容区 -->
         <div class="main-content">
-            <div class="cover-area">
-                <div class="mobile-turntable" id="mobileTurntable">
-                    <div class="mobile-turntable__platter">
-                        <div class="album-cover" id="albumCover">
-                            <div class="placeholder">
-                                <i class="fas fa-music"></i>
-                            </div>
-                        </div>
+            <div class="player-section">
+                <div class="album-art">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="song-info">
+                    <div class="song-title">选择一首歌曲开始播放</div>
+                    <div class="song-artist">未知艺术家</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 30%"></div>
+                    </div>
+                    <div class="time-display">
+                        <span>01:45</span>
+                        <span>04:20</span>
                     </div>
                 </div>
-                <div class="mobile-inline-lyrics" id="mobileInlineLyrics" aria-hidden="true">
-                    <div class="mobile-inline-lyrics__hint">
-                        <i class="fas fa-arrow-left"></i>
-                        轻触返回封面
-                    </div>
-                    <div class="mobile-inline-lyrics__scroll" id="mobileInlineLyricsScroll">
-                        <div class="mobile-inline-lyrics__content" id="mobileInlineLyricsContent"></div>
-                    </div>
-                </div>
-                <div class="current-song-info">
-                    <div class="current-song-title" id="currentSongTitle">选择一首歌曲开始播放</div>
-                    <div class="current-song-artist" id="currentSongArtist">未知艺术家</div>
-                    <button class="mobile-quality-chip" id="mobileQualityToggle" type="button" aria-haspopup="menu" aria-expanded="false">
-                        <span id="mobileQualityLabel">极高音质</span>
-                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                <div class="player-controls">
+                    <button class="control-btn">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="control-btn play-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn">
+                        <i class="fas fa-redo"></i>
                     </button>
                 </div>
-            </div>
-
-            <div class="mobile-panel" id="mobilePanel">
-                <div class="mobile-panel-header" id="mobilePanelHeader">
-                    <div class="mobile-panel-handle" aria-hidden="true"></div>
-                    <div class="mobile-panel-title" id="mobilePanelTitle">播放列表</div>
-                    <div class="mobile-panel-actions">
-                        <button
-                            id="mobileImportPlaylistBtn"
-                            class="mobile-panel-action-btn"
-                            type="button"
-                            aria-label="导入播放列表"
-                            title="导入播放列表"
-                        >
-                            <i class="fas fa-file-import" aria-hidden="true"></i>
-                        </button>
-                        <button
-                            id="mobileExportPlaylistBtn"
-                            class="mobile-panel-action-btn"
-                            type="button"
-                            aria-label="导出播放列表"
-                            title="导出播放列表"
-                            aria-disabled="true"
-                            disabled
-                        >
-                            <i class="fas fa-file-export" aria-hidden="true"></i>
-                        </button>
-                        <button
-                            id="mobileClearPlaylistBtn"
-                            class="mobile-panel-action-btn mobile-panel-clear-btn"
-                            type="button"
-                            aria-label="清空播放列表"
-                            title="清空播放列表"
-                            onclick="clearPlaylist()"
-                            hidden
-                            aria-hidden="true"
-                        >
-                            <i class="fas fa-trash" aria-hidden="true"></i>
-                        </button>
-                        <button id="mobilePanelClose" class="mobile-close-btn mobile-panel-action-btn" type="button" aria-label="收起播放面板">
-                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="playlist active empty" id="playlist">
-                    <div class="playlist-header">
-                        <div class="playlist-label" aria-hidden="true">播放列表</div>
-                        <div class="playlist-actions-tray" role="group" aria-label="播放列表操作">
-                            <input
-                                id="importPlaylistInput"
-                                class="playlist-import-input"
-                                type="file"
-                                accept="application/json"
-                                hidden
-                            />
-                            <button
-                                class="playlist-action-btn playlist-action-btn--import"
-                                id="importPlaylistBtn"
-                                type="button"
-                                title="导入播放列表"
-                                aria-label="导入播放列表"
-                            >
-                                <i class="fas fa-file-import" aria-hidden="true"></i>
-                            </button>
-                            <button
-                                class="playlist-action-btn playlist-action-btn--export"
-                                id="exportPlaylistBtn"
-                                type="button"
-                                title="导出播放列表"
-                                aria-label="导出播放列表"
-                            >
-                                <i class="fas fa-file-export" aria-hidden="true"></i>
-                            </button>
-                            <button
-                                class="playlist-action-btn playlist-action-btn--clear clear-playlist-btn"
-                                id="clearPlaylistBtn"
-                                type="button"
-                                onclick="clearPlaylist()"
-                                title="清空播放列表"
-                                aria-label="清空播放列表"
-                            >
-                                <i class="fas fa-trash" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="playlist-scroll">
-                        <div class="playlist-items" id="playlistItems"></div>
-                    </div>
-                </div>
-                <div class="lyrics empty" id="lyrics" data-placeholder="default">
-                    <div class="lyrics-scroll" id="lyricsScroll">
-                        <div class="lyrics-content" id="lyricsContent"></div>
-                    </div>
+                <div class="quality-selector">
+                    <div class="quality-option active">标准</div>
+                    <div class="quality-option">高品</div>
+                    <div class="quality-option">无损</div>
                 </div>
             </div>
+
+            <button class="explore-btn">
+                <i class="fas fa-satellite-dish pulse"></i>
+                <span>探索星籁雷达</span>
+            </button>
         </div>
 
-        <div class="controls">
-            <div class="transport-controls">
-                <button class="play-mode-btn transport-button transport-button--mode" id="playModeBtn" type="button" title="播放模式">
-                    <i class="fas fa-repeat"></i>
-                </button>
-                <button class="transport-button transport-button--prev" onclick="playPrevious()" type="button" title="上一曲"><i class="fas fa-backward-step"></i></button>
-                <button class="transport-button transport-button--play" id="playPauseBtn" type="button" title="播放 / 暂停"><i class="fas fa-play"></i></button>
-                <button class="transport-button transport-button--next" onclick="playNext()" type="button" title="下一曲"><i class="fas fa-forward-step"></i></button>
-                <button class="transport-button transport-button--queue" id="mobileQueueToggle" type="button" title="打开播放列表" aria-label="打开播放列表"><i class="fas fa-bars"></i></button>
-            </div>
-            <div class="progress-container">
-                <span id="currentTimeDisplay">00:00</span>
-                <input type="range" id="progressBar" min="0" max="0" step="0.1" value="0">
-                <span id="durationDisplay">00:00</span>
-            </div>
-            <div class="audio-tools">
-                <div class="player-quality">
-                    <button id="qualityToggle" class="player-quality-btn" type="button">
-                        <span id="qualityLabel">极高音质</span>
-                    </button>
-                    <div id="playerQualityMenu" class="player-quality-menu"></div>
+        <!-- 右侧边栏 -->
+        <div class="right-sidebar">
+            <div class="playlist-section">
+                <div class="section-header">
+                    <div class="section-title">播放列表</div>
+                    <div class="section-actions">
+                        <button class="action-btn">
+                            <i class="fas fa-file-import"></i>
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-file-export"></i>
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="volume-container">
-                    <i id="volumeIcon" class="fas fa-volume-up"></i>
-                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
+                <div class="playlist-items">
+                    <div class="playlist-item">
+                        <div class="item-info">
+                            <div class="item-title">夜空中最亮的星</div>
+                            <div class="item-artist">逃跑计划</div>
+                        </div>
+                        <div class="item-duration">04:15</div>
+                    </div>
+                    <div class="playlist-item active">
+                        <div class="item-info">
+                            <div class="item-title">平凡之路</div>
+                            <div class="item-artist">朴树</div>
+                        </div>
+                        <div class="item-duration">04:55</div>
+                    </div>
+                    <div class="playlist-item">
+                        <div class="item-info">
+                            <div class="item-title">理想三旬</div>
+                            <div class="item-artist">陈鸿宇</div>
+                        </div>
+                        <div class="item-duration">03:45</div>
+                    </div>
+                    <div class="playlist-item">
+                        <div class="item-info">
+                            <div class="item-title">起风了</div>
+                            <div class="item-artist">买辣椒也用券</div>
+                        </div>
+                        <div class="item-duration">05:25</div>
+                    </div>
                 </div>
             </div>
-            <button id="loadOnlineBtn" title="聚合所有雷达，探索新音乐">
-                <span class="btn-text"><i class="fas fa-satellite-dish"></i> 探索雷达</span>
-                <span class="loader" style="display: none;"></span>
-            </button>
+
+            <div class="lyrics-section">
+                <div class="section-header">
+                    <div class="section-title">歌词</div>
+                </div>
+                <div class="lyrics-content">
+                    <div class="lyrics-line">我曾经跨过山和大海</div>
+                    <div class="lyrics-line">也穿过人山人海</div>
+                    <div class="lyrics-line active">我曾经拥有着的一切</div>
+                    <div class="lyrics-line">转眼都飘散如烟</div>
+                    <div class="lyrics-line">我曾经失落失望失掉所有方向</div>
+                    <div class="lyrics-line">直到看见平凡才是唯一的答案</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="mobile-overlay-scrim" id="mobileOverlayScrim"></div>
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        });
 
-    <audio id="audioPlayer" preload="metadata" playsinline></audio>
+        // 播放/暂停功能
+        const playBtn = document.querySelector('.play-btn');
+        const playIcon = playBtn.querySelector('i');
+        
+        playBtn.addEventListener('click', () => {
+            if (playIcon.className === 'fas fa-play') {
+                playIcon.className = 'fas fa-pause';
+            } else {
+                playIcon.className = 'fas fa-play';
+            }
+        });
 
-<!-- 通知容器 -->
-<div id="notification" class="notification"></div>
+        // 源选择功能
+        const sourceOptions = document.querySelectorAll('.source-option');
+        sourceOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sourceOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
 
-<!-- 调试信息容器 -->
-<div id="debugInfo" class="debug-info"></div>
+        // 音质选择功能
+        const qualityOptions = document.querySelectorAll('.quality-option');
+        qualityOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                qualityOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="js/index.js"></script>
-<script>
-    if (window.__SOLARA_IS_MOBILE) {
-        const mobileScript = document.createElement('script');
-        mobileScript.src = 'js/mobile.js';
-        mobileScript.async = false;
-        mobileScript.defer = false;
-        document.body.appendChild(mobileScript);
-    }
-</script>
+        // 播放列表项点击
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        playlistItems.forEach(item => {
+            item.addEventListener('click', () => {
+                playlistItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                // 更新歌曲信息
+                const title = item.querySelector('.item-title').textContent;
+                const artist = item.querySelector('.item-artist').textContent;
+                document.querySelector('.song-title').textContent = title;
+                document.querySelector('.song-artist').textContent = artist;
+            });
+        });
+    </script>
 </body>
 </html>
